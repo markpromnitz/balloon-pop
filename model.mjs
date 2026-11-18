@@ -25,7 +25,7 @@ export function validateConfig(config) {
   const numbers = PARITIES.reduce((sum, key) => sum + config[key], 0);
   if (balloons < 1) return "Add at least one balloon.";
   if (balloons > 1000) return "Use at most 1,000 balloons for this simulation.";
-  if (balloons !== numbers) return `Colour counts total ${balloons}, but odd and even counts total ${numbers}. Make the totals equal.`;
+  if (balloons !== numbers) return `Colour counts total ${balloons}, but odd and even counts total ${numbers}. Every balloon has one dot and one number, so change another count until the totals match.`;
   if (!COLOURS.includes(config.winColour) || !PARITIES.includes(config.winParity)) {
     return "Choose a winning dot colour and number parity.";
   }
@@ -95,7 +95,7 @@ export function drawOutcome(config, randomInt) {
   return { colour, parity, win: colour === config.winColour && parity === config.winParity };
 }
 
-// One independent experiment is exactly two tosses. Pools reset before the next pair.
+// One independent experiment is exactly two attempts. Pools reset before the next pair.
 export function drawPair(config, withoutReplacement, randomInt) {
   if (withoutReplacement && totalBalloons(config) < 2) return null;
   const first = drawOutcome(config, randomInt);

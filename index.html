@@ -17,6 +17,7 @@
       <a class="brand" href="#top" aria-label="Balloon Pop, back to top"><span class="brand-mark" aria-hidden="true">✳</span><span>THE PROBABILITY<br><strong>CARNIVAL</strong></span></a>
       <nav aria-label="Page sections"><a href="#booth">The booth</a><a href="#odds">The odds</a><a href="#results">Results</a><a href="#challenge">Two in a row</a></nav>
       <span class="topbar-tag">A little chance. A lot to learn.</span>
+      <button type="button" class="button button-gold summary-open">📋 Summary</button>
     </div>
   </header>
 
@@ -25,7 +26,7 @@
       <div class="hero-stars" aria-hidden="true">✦ &nbsp; ✧ &nbsp; ✦</div>
       <p class="eyebrow">STEP RIGHT UP · A PROBABILITY EXPERIMENT</p>
       <h1 id="hero-title">Balloon <em>Pop!</em></h1>
-      <p class="hero-lead">Pick a winning ticket. Pop a balloon. See how the odds play out over one toss—or one thousand.</p>
+      <p class="hero-lead">Pick a winning ticket. Pop a balloon. See how the odds play out over one attempt—or one thousand.</p>
       <div class="hero-badges"><span>01 · Set the game</span><span>02 · Make a prediction</span><span>03 · Run the experiment</span></div>
       <div class="hero-scallop" aria-hidden="true"></div>
     </section>
@@ -41,7 +42,7 @@
             <span class="stage-star star-one" aria-hidden="true">✧</span><span class="stage-star star-two" aria-hidden="true">✦</span>
           </div>
           <div class="booth-bottom">
-            <div class="last-ticket" aria-live="polite" aria-atomic="true"><span class="ticket-label">LAST TOSS</span><strong id="last-outcome">Waiting for a toss…</strong><span id="last-verdict">Your result will appear here.</span></div>
+            <div class="last-ticket" aria-live="polite" aria-atomic="true"><span class="ticket-label">LAST ATTEMPT</span><strong id="last-outcome">Waiting for an attempt…</strong><span id="last-verdict">Your result will appear here.</span></div>
             <button id="pop-one" class="button button-gold button-large" type="button">🎯 &nbsp; Pop one balloon</button>
           </div>
         </div>
@@ -52,7 +53,7 @@
           <p class="muted">Scenario 10 is ready to play. Choose another ticket or set your own balloon mix.</p>
           <label class="field-label" for="scenario">Scenario ticket</label>
           <select id="scenario" class="field-select" aria-describedby="preset-help"></select>
-          <p id="preset-help" class="field-help">Scenarios 1–10 come from the supplied assignment sheet.</p>
+          <p id="preset-help" class="field-help">Scenarios 1–10 come from your assignment sheet. Change any number or the winning ticket and a fresh game starts automatically, clearing your results.</p>
           <form id="settings-form" novalidate>
             <div class="field-group-title">DOT COLOURS <span>number of balloons</span></div>
             <div class="count-grid colours-grid">
@@ -71,14 +72,14 @@
               <label>Number<select id="win-parity" name="winParity" class="field-select"><option value="odd">Odd number</option><option value="even">Even number</option></select></label>
             </div>
             <p id="settings-error" class="error" role="alert" hidden></p>
-            <button class="button button-ink apply-button" type="submit">Apply game settings <span aria-hidden="true">→</span></button>
+            <button class="button button-ink apply-button" type="submit">Start fresh game <span aria-hidden="true">→</span></button>
           </form>
-          <p class="model-note">Each toss draws a dot colour and a number parity independently from these counts. The balloon is replaced before the next toss.</p>
+          <p class="model-note">Think of two bags: one holds the dot colours, the other holds the odd and even numbers. Each pop pulls one thing from each bag, then puts both back so the next attempt starts the same.</p>
         </div>
       </section>
 
       <section id="odds" class="odds-section" aria-labelledby="odds-title">
-        <div class="section-heading"><div><div class="section-kicker"><span class="round-num">02</span><span>BEFORE THE FIRST POP</span></div><h2 id="odds-title">Know <em>the odds.</em></h2></div><p>Every colour can pair with an odd or even number. The highlighted box is your winning ticket.</p></div>
+        <div class="section-heading"><div><div class="section-kicker"><span class="round-num">02</span><span>BEFORE THE FIRST POP</span></div><h2 id="odds-title">Know <em>the odds.</em></h2></div><p>Every colour can pair with an odd or even number. The highlighted box is your winning ticket. <strong>Predict first:</strong> out of 100 attempts, how many wins do you expect?</p></div>
         <div class="odds-grid">
           <div class="outcome-card paper-card">
             <div class="card-heading"><span class="small-caps">THE SIX POSSIBLE COMBINATIONS</span><span class="asterisk" aria-hidden="true">✳</span></div>
@@ -90,24 +91,39 @@
             <h3 id="formula-target">Blue dot + odd number</h3>
             <div class="big-prob" id="theory-percent">15%</div>
             <div class="formula-line" id="formula-line">6/20 × 10/20 = 3/20</div>
-            <p id="formula-words">About 15 wins in 100 tosses on average.</p>
+            <p id="formula-words">About 15 wins in 100 attempts on average.</p>
             <div class="formula-footer">THEORETICAL PROBABILITY <span aria-hidden="true">✧</span></div>
           </div>
+        </div>
+        <div class="prediction-box paper-card">
+          <label for="prediction"><strong>Your prediction:</strong> out of 100 attempts, I expect <input id="prediction" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="?"> wins</label>
+          <p class="field-help">Work it out from the table, type your estimate, then pop some balloons to see how close you were.</p>
         </div>
       </section>
 
       <section id="results" class="results-section" aria-labelledby="results-title">
-        <div class="section-heading"><div><div class="section-kicker"><span class="round-num">03</span><span>RUN THE EXPERIMENT</span></div><h2 id="results-title">Let chance <em>take a turn.</em></h2></div><p>Try a few tosses, then many. Watch the experimental result move toward the theoretical chance.</p></div>
-        <div class="run-bar"><span class="run-label">QUICK TOSSES</span><button type="button" class="button button-outline batch-button" data-tosses="10">+ 10</button><button type="button" class="button button-outline batch-button" data-tosses="100">+ 100</button><button type="button" class="button button-outline batch-button" data-tosses="1000">+ 1,000</button><span class="run-divider" aria-hidden="true"></span><label class="custom-run">Custom <input id="custom-count" type="number" min="1" max="10000" step="1" value="250" inputmode="numeric" aria-label="Number of custom tosses"></label><button id="run-custom" type="button" class="button button-ink">Run tosses <span aria-hidden="true">→</span></button></div>
+        <div class="section-heading"><div><div class="section-kicker"><span class="round-num">03</span><span>RUN THE EXPERIMENT</span></div><h2 id="results-title">Let chance <em>take a turn.</em></h2></div><p>Try a few attempts, then many. Watch the experimental chance (what actually happened) move toward the theoretical chance (what the maths predicts).</p></div>
+        <div class="run-bar"><span class="run-label">QUICK ATTEMPTS</span><button type="button" class="button button-outline batch-button" data-tosses="10">+ 10</button><button type="button" class="button button-outline batch-button" data-tosses="100">+ 100</button><button type="button" class="button button-outline batch-button" data-tosses="1000">+ 1,000</button><span class="run-divider" aria-hidden="true"></span><label class="custom-run">Custom <input id="custom-count" type="number" min="1" max="10000" step="1" value="250" inputmode="numeric" aria-label="Number of custom attempts"></label><button id="run-custom" type="button" class="button button-ink">Run attempts <span aria-hidden="true">→</span></button></div>
         <p id="run-error" class="error" role="alert" hidden></p>
+        <div class="results-summary-cta"><button type="button" class="button button-ink summary-open">📋 See my summary <span aria-hidden="true">→</span></button><span class="field-help">One screenshot-ready page with your prediction, results and conclusion.</span></div>
         <div class="stats-grid">
-          <div class="stat-card"><span>ATTEMPTS</span><strong id="trial-count">0</strong><small>total tosses</small></div>
+          <div class="stat-card"><span>ATTEMPTS</span><strong id="trial-count">0</strong><small>total attempts</small></div>
           <div class="stat-card"><span>WINNING POPS</span><strong id="win-count">0</strong><small id="loss-count">0 misses</small></div>
-          <div class="stat-card stat-card-highlight"><span>EXPERIMENTAL CHANCE</span><strong id="experimental-percent">—</strong><small id="experimental-fraction">Start tossing to see it</small></div>
-          <div class="stat-card"><span>THEORETICAL CHANCE</span><strong id="expected-percent">15%</strong><small id="difference">Compare after a toss</small></div>
+          <div class="stat-card stat-card-highlight"><span>EXPERIMENTAL · WHAT HAPPENED</span><strong id="experimental-percent">—</strong><small id="experimental-fraction">Make an attempt to see it</small></div>
+          <div class="stat-card"><span>THEORETICAL · WHAT MATHS SAYS</span><strong id="expected-percent">15%</strong><small id="difference">Compare after an attempt</small></div>
         </div>
+        <p id="reflection" class="chart-note" role="status">Make a prediction above, then pop some balloons to test it.</p>
+        <details class="meaning-details">
+          <summary>What do these numbers mean?</summary>
+          <ul>
+            <li><strong>Theoretical</strong> is the chance worked out with maths before any attempts: (balloons of your colour ÷ total) × (numbers of your parity ÷ total).</li>
+            <li><strong>Experimental</strong> is what really happened: wins ÷ attempts. It changes every time you attempt.</li>
+            <li><strong>Percentage points</strong> measure the gap between the two. 15% and 17% are 2 percentage points apart.</li>
+            <li>More attempts usually means the experimental chance lands closer to the theoretical chance.</li>
+          </ul>
+        </details>
         <div class="charts-grid">
-          <div class="chart-card paper-card"><div class="card-heading"><div><span class="small-caps">HOW THE WIN RATE MOVES</span><h3>Chance over time</h3></div><span class="chart-key"><i></i>Your tosses <b></b>Expected</span></div><div class="chart-frame"><svg id="trend-chart" viewBox="0 0 600 215" role="img" aria-label="Running win rate compared with theoretical probability"></svg></div><p class="chart-note">The line can jump around at first. Larger samples usually settle closer to the expected rate.</p></div>
+          <div class="chart-card paper-card"><div class="card-heading"><div><span class="small-caps">HOW THE WIN RATE MOVES</span><h3>Chance over time</h3></div><span class="chart-key"><i></i>Your attempts <b></b>Expected</span></div><div class="chart-frame"><svg id="trend-chart" viewBox="0 0 600 215" role="img" aria-label="Running win rate compared with theoretical probability"></svg></div><p class="chart-note">The line can jump around at first. Larger samples usually settle closer to the expected rate.</p></div>
           <div class="chart-card paper-card"><div class="card-heading"><div><span class="small-caps">EVERY POSSIBLE OUTCOME</span><h3>What came up</h3></div></div><div id="frequency-chart" class="frequency-chart" aria-label="Observed counts by colour and parity"></div></div>
         </div>
       </section>
@@ -116,23 +132,171 @@
         <details id="challenge-details" class="challenge-details">
           <summary><span class="challenge-tag">04 · OPTIONAL EXTENSION</span><span class="challenge-title">Can you win <em>twice in a row?</em></span><span class="challenge-intro">Compare what changes when both the balloon and hidden number are returned—or taken away.</span><span class="challenge-open" aria-hidden="true">+</span></summary>
           <div class="challenge-body">
-            <p class="challenge-explain">One <strong>pair</strong> is two consecutive tosses. A pair only wins when <strong>both tosses</strong> match your winning ticket. The same game settings above apply here.</p>
+            <p class="challenge-explain">One <strong>pair</strong> is two consecutive attempts. A pair only wins when <strong>both attempts</strong> match your winning ticket. The same game settings above apply here.</p>
             <div id="challenge-config" class="challenge-config">SCENARIO 10 · BLUE + ODD · 4 RED / 6 BLUE / 10 GREEN · 10 ODD / 10 EVEN</div>
             <div class="pair-math-grid">
-              <article class="pair-math-card"><div class="pair-math-head"><span class="pair-icon">↺</span><span>RETURN BOTH</span></div><h3>With replacement</h3><p>Restore both pools before toss two, then independently redraw a dot colour and number parity. The odds stay the same.</p><div class="pair-steps"><div><span>FIRST WIN</span><strong id="replace-first">15%</strong></div><span aria-hidden="true">×</span><div><span>SECOND WIN</span><strong id="replace-second">15%</strong></div><span aria-hidden="true">=</span><div><span>BOTH WIN</span><strong id="replace-both">2.25%</strong></div></div><div id="replace-formula" class="pair-equation">6/20 × 10/20 × 6/20 × 10/20 = 9/400</div><figure class="pair-chart" aria-label="With replacement probability graph"><div class="pair-chart-heading"><figcaption>CHANCE AT EACH STEP</figcaption><span>0% <span aria-hidden="true">→</span> <strong id="replace-chart-scale">20%</strong></span></div><div id="replace-chart-rows" class="pair-chart-rows"></div></figure><p class="pair-observed" id="replace-observed">Observed: no pairs run yet.</p></article>
-              <article class="pair-math-card pair-math-card-dark"><div class="pair-math-head"><span class="pair-icon">−</span><span>REMOVE BOTH</span></div><h3>Without replacement</h3><p>The popped balloon and hidden number leave their pools. Toss two uses the remaining counts.</p><div class="pair-steps"><div><span>FIRST WIN</span><strong id="remove-first">15%</strong></div><span aria-hidden="true">×</span><div><span>SECOND WIN*</span><strong id="remove-second">12.47%</strong></div><span aria-hidden="true">=</span><div><span>BOTH WIN</span><strong id="remove-both">1.87%</strong></div></div><div id="remove-formula" class="pair-equation">6/20 × 10/20 × 5/19 × 9/19 = 27/1444</div><figure class="pair-chart" aria-label="Without replacement probability graph"><div class="pair-chart-heading"><figcaption>CHANCE AT EACH STEP</figcaption><span>0% <span aria-hidden="true">→</span> <strong id="remove-chart-scale">20%</strong></span></div><div id="remove-chart-rows" class="pair-chart-rows"></div></figure><p class="pair-observed" id="remove-observed">Observed: no pairs run yet.</p></article>
+              <article class="pair-math-card"><div class="pair-math-head"><span class="pair-icon">↺</span><span>RETURN BOTH</span></div><h3>With replacement</h3><p>Restore both pools before attempt two, then independently redraw a dot colour and number parity. The odds stay the same.</p><div class="pair-steps"><div><span>FIRST WIN</span><strong id="replace-first">15%</strong></div><span aria-hidden="true">×</span><div><span>SECOND WIN</span><strong id="replace-second">15%</strong></div><span aria-hidden="true">=</span><div><span>BOTH WIN</span><strong id="replace-both">2.25%</strong></div></div><div id="replace-formula" class="pair-equation">6/20 × 10/20 × 6/20 × 10/20 = 9/400</div><figure class="pair-chart" aria-label="With replacement probability graph"><div class="pair-chart-heading"><figcaption>CHANCE AT EACH STEP</figcaption><span>0% <span aria-hidden="true">→</span> <strong id="replace-chart-scale">20%</strong></span></div><div id="replace-chart-rows" class="pair-chart-rows"></div></figure><p class="pair-observed" id="replace-observed">Observed: no pairs run yet.</p></article>
+              <article class="pair-math-card pair-math-card-dark"><div class="pair-math-head"><span class="pair-icon">−</span><span>REMOVE BOTH</span></div><h3>Without replacement</h3><p>The popped balloon and hidden number leave their pools. Attempt two uses the remaining counts.</p><div class="pair-steps"><div><span>FIRST WIN</span><strong id="remove-first">15%</strong></div><span aria-hidden="true">×</span><div><span>SECOND WIN*</span><strong id="remove-second">12.47%</strong></div><span aria-hidden="true">=</span><div><span>BOTH WIN</span><strong id="remove-both">1.87%</strong></div></div><div id="remove-formula" class="pair-equation">6/20 × 10/20 × 5/19 × 9/19 = 27/1444</div><figure class="pair-chart" aria-label="Without replacement probability graph"><div class="pair-chart-heading"><figcaption>CHANCE AT EACH STEP</figcaption><span>0% <span aria-hidden="true">→</span> <strong id="remove-chart-scale">20%</strong></span></div><div id="remove-chart-rows" class="pair-chart-rows"></div></figure><p class="pair-observed" id="remove-observed">Observed: no pairs run yet.</p></article>
             </div>
-            <p class="pair-chart-note">Both graphs share the same percentage scale. “Second win” is the chance after the first toss has already won; “both wins” is the chance of the whole pair succeeding.</p>
-            <p id="conditional-note" class="conditional-note">*The second chance assumes the first toss won. For scenario 10, that leaves 5 blue balloons and 9 odd numbers among 19 of each.</p>
-            <div class="pair-lab paper-card"><div class="pair-lab-heading"><div><span class="small-caps">TRY THE TWO-TOSS EXPERIMENT</span><h3>Run a set of pairs</h3></div><p>Each new pair starts with the original mix. Results for the two methods are kept separately.</p></div><fieldset class="pair-mode"><legend>Choose a method</legend><label><input type="radio" name="pair-mode" value="replace" checked><span>↺ &nbsp; With replacement</span></label><label><input type="radio" name="pair-mode" value="remove"><span>− &nbsp; Without replacement</span></label></fieldset><div class="pair-controls"><button id="pair-one" type="button" class="button button-outline">Run 1 pair</button><button id="pair-hundred" type="button" class="button button-outline">+ 100 pairs</button><label>Custom pairs <input id="pair-custom-count" type="number" min="1" max="10000" step="1" value="1000" inputmode="numeric"></label><button id="pair-run-custom" type="button" class="button button-ink">Run pairs <span aria-hidden="true">→</span></button></div><p id="pair-run-error" class="error" role="alert" hidden></p><div class="pair-result-grid"><div><span>LAST PAIR</span><strong id="pair-last">No pairs yet</strong></div><div><span>DOUBLE WINS</span><strong id="pair-wins">0 / 0</strong></div><div><span>EXPERIMENTAL CHANCE</span><strong id="pair-experimental">—</strong></div><div><span>THEORETICAL CHANCE</span><strong id="pair-theoretical">2.25%</strong></div></div><div class="pair-lab-bottom"><p id="pair-status" role="status">Choose a method and run some pairs.</p><button id="pair-reset" type="button" class="text-button">Reset pair results ↺</button></div></div>
-            <p class="challenge-assumption">This model treats dot colours and number parities as independently assigned pools. The source sheet gives their totals but does not specify a fixed colour–number pairing for every balloon. Without replacement means removing one of each <em>within a pair</em>; the pools reset for the next pair experiment.</p>
+            <p class="pair-chart-note">Both graphs share the same percentage scale. “Second win” is the chance after the first attempt has already won; “both wins” is the chance of the whole pair succeeding.</p>
+            <p id="pair-insight" class="conditional-note"></p>
+            <p id="conditional-note" class="conditional-note">*The second chance assumes the first attempt won. For scenario 10, that leaves 5 blue balloons and 9 odd numbers among 19 of each.</p>
+            <div class="results-summary-cta"><button id="pair-summary-open" type="button" class="button button-ink">📋 Two-in-a-row summary <span aria-hidden="true">→</span></button><span class="field-help">A screenshot-ready page comparing both methods.</span></div>
+            <div class="pair-lab paper-card"><div class="pair-lab-heading"><div><span class="small-caps">TRY THE TWO-ATTEMPT EXPERIMENT</span><h3>Run a set of pairs</h3></div><p>Each new pair starts with the original mix. Results for the two methods are kept separately.</p></div><fieldset class="pair-mode"><legend>Choose a method</legend><label><input type="radio" name="pair-mode" value="replace" checked><span>↺ &nbsp; With replacement</span></label><label><input type="radio" name="pair-mode" value="remove"><span>− &nbsp; Without replacement</span></label></fieldset><div class="pair-controls"><button id="pair-one" type="button" class="button button-outline">Run 1 pair</button><button id="pair-hundred" type="button" class="button button-outline">+ 100 pairs</button><label>Custom pairs <input id="pair-custom-count" type="number" min="1" max="10000" step="1" value="1000" inputmode="numeric"></label><button id="pair-run-custom" type="button" class="button button-ink">Run pairs <span aria-hidden="true">→</span></button></div><p id="pair-run-error" class="error" role="alert" hidden></p><div class="pair-result-grid"><div><span>LAST PAIR</span><strong id="pair-last">No pairs yet</strong></div><div><span>DOUBLE WINS</span><strong id="pair-wins">0 / 0</strong></div><div><span>EXPERIMENTAL CHANCE</span><strong id="pair-experimental">—</strong></div><div><span>THEORETICAL CHANCE</span><strong id="pair-theoretical">2.25%</strong></div></div><div class="pair-lab-bottom"><p id="pair-status" role="status">Choose a method and run some pairs.</p><button id="pair-reset" type="button" class="text-button">Reset pair results ↺</button></div></div>
+            <p class="challenge-assumption">Same two-bag idea as before: one bag of colours, one bag of odd/even numbers. <strong>With replacement</strong> puts both back after attempt one. <strong>Without replacement</strong> keeps both out, so attempt two has fewer to pick from. Either way, both bags are refilled before the next pair.</p>
           </div>
         </details>
       </section>
 
-      <section class="record-section" aria-labelledby="record-title"><div class="record-copy"><div class="section-kicker"><span class="round-num">05</span><span>RECORD &amp; REFLECT</span></div><h2 id="record-title">Take your results <em>with you.</em></h2><p>Capture this ticket for your assignment. Compare your experimental chance with the prediction, then explain why they may differ.</p><div class="record-actions"><button id="copy-summary" type="button" class="button button-gold">Copy summary</button><button id="download-csv" type="button" class="button button-outline-light">Download CSV</button><button id="reset-run" type="button" class="text-button">Reset experiment ↺</button></div><p id="action-status" class="action-status" role="status"></p></div><div id="summary-card" class="summary-card"><div class="summary-top"><span>THE PROBABILITY CARNIVAL</span><span>RESULTS TICKET № <b id="ticket-scenario">10</b></span></div><div class="summary-title">Balloon Pop!</div><div class="summary-rule"></div><dl><div><dt>Winning combination</dt><dd id="summary-target">Blue dot · Odd number</dd></div><div><dt>Balloon mix</dt><dd id="summary-mix">4 red · 6 blue · 10 green</dd></div><div><dt>Number mix</dt><dd id="summary-parity">10 odd · 10 even</dd></div><div><dt>Trials / wins</dt><dd id="summary-trials">0 / 0</dd></div><div><dt>Theoretical</dt><dd id="summary-theory">15%</dd></div><div><dt>Experimental</dt><dd id="summary-experiment">—</dd></div></dl><div class="summary-bottom">YOUR EVIDENCE OF CHANCE <span aria-hidden="true">✦ ✦ ✦</span></div></div></section>
-      <footer><span>✳ THE PROBABILITY CARNIVAL</span><span>Made for curious minds and repeated trials.</span><a href="#top">Back to top ↑</a></footer>
+      <section class="record-section" aria-labelledby="record-title"><div class="record-copy"><div class="section-kicker"><span class="round-num">05</span><span>RECORD &amp; REFLECT</span></div><h2 id="record-title">Take your results <em>with you.</em></h2><p>Capture this ticket for your assignment. Compare your experimental chance with the prediction. Ask yourself: Did the result match? Would 1,000 attempts be closer than 10? What could make them differ?</p><div class="record-actions"><button id="copy-summary" type="button" class="button button-gold">Copy summary</button><button type="button" class="button button-gold summary-open">📋 Open summary</button><button id="download-csv" type="button" class="button button-outline-light">Download CSV</button><button id="reset-run" type="button" class="text-button">Reset experiment ↺</button></div><p id="action-status" class="action-status" role="status"></p></div><div id="summary-card" class="summary-card"><div class="summary-top"><span>THE PROBABILITY CARNIVAL</span><span>RESULTS TICKET № <b id="ticket-scenario">10</b></span></div><div class="summary-title">Balloon Pop!</div><div class="summary-rule"></div><dl><div><dt>Winning combination</dt><dd id="summary-target">Blue dot · Odd number</dd></div><div><dt>Balloon mix</dt><dd id="summary-mix">4 red · 6 blue · 10 green</dd></div><div><dt>Number mix</dt><dd id="summary-parity">10 odd · 10 even</dd></div><div><dt>Attempts / wins</dt><dd id="summary-trials">0 / 0</dd></div><div><dt>Theoretical</dt><dd id="summary-theory">15%</dd></div><div><dt>Experimental</dt><dd id="summary-experiment">—</dd></div></dl><div class="summary-bottom">YOUR EVIDENCE OF CHANCE <span aria-hidden="true">✦ ✦ ✦</span></div></div></section>
+      <footer><span>✳ THE PROBABILITY CARNIVAL</span><span>Made for curious minds and repeated attempts.</span><a href="#top">Back to top ↑</a></footer>
     </div>
   </main>
+
+  <dialog id="summary-dialog" class="summary-dialog" aria-labelledby="sum-title">
+    <div class="sum-toolbar">
+      <span>Take a screenshot of the card below. Your name and date are on it.</span>
+      <span class="sum-toolbar-actions">
+        <button id="summary-copy" type="button" class="button button-outline">Copy as text</button>
+        <button id="summary-print" type="button" class="button button-outline">Print / save PDF</button>
+        <button id="summary-close" type="button" class="button button-gold" autofocus>Close ✕</button>
+      </span>
+    </div>
+    <article id="sum-card" class="sum-card">
+      <div class="sum-stripe" aria-hidden="true"></div>
+      <div class="sum-body">
+        <header class="sum-head">
+          <div>
+            <div class="sum-kicker">THE PROBABILITY CARNIVAL · <span id="sum-scenario">SCENARIO 10</span></div>
+            <h2 id="sum-title">Balloon Pop: my results</h2>
+            <p class="sum-ticket">Winning ticket: <strong id="sum-ticket">Blue dot + odd number</strong></p>
+            <p class="sum-setup" id="sum-setup"></p>
+          </div>
+          <div class="sum-who">
+            <label>Name <input id="sum-name" class="sum-name" type="text" maxlength="40" placeholder="Type your name" autocomplete="off"></label>
+            <span id="sum-date" class="sum-date"></span>
+          </div>
+        </header>
+
+        <div class="sum-grid sum-grid-3">
+          <section class="sum-box" aria-labelledby="sum-h-predict">
+            <div class="sum-label"><span class="round-num">1</span><span id="sum-h-predict">PREDICT · THEORETICAL</span></div>
+            <p class="sum-spaces">Colours A = {Red, Blue, Green}<br>Numbers B = {Odd, Even}</p>
+            <div class="sum-big theory" id="sum-theory">15%</div>
+            <p class="sum-formula" id="sum-formula"></p>
+            <p class="sum-note" id="sum-prediction"></p>
+          </section>
+          <section class="sum-box" aria-labelledby="sum-h-table">
+            <div class="sum-label"><span class="round-num">2</span><span id="sum-h-table">ALL SIX OUTCOMES</span></div>
+            <table class="sum-table">
+              <caption class="sr-only">Theoretical chance and observed result for each colour and number combination</caption>
+              <thead><tr><th scope="col"></th><th scope="col">ODD</th><th scope="col">EVEN</th></tr></thead>
+              <tbody id="sum-table-body"></tbody>
+            </table>
+            <p class="sum-note">Top: theory. Bottom: what happened (attempts).</p>
+          </section>
+          <section class="sum-box" aria-labelledby="sum-h-results">
+            <div class="sum-label"><span class="round-num">3</span><span id="sum-h-results">RESULTS · EXPERIMENTAL</span></div>
+            <div class="sum-big exp" id="sum-exp">—</div>
+            <p class="sum-formula" id="sum-exp-detail">No attempts yet</p>
+            <p class="sum-note" id="sum-attempts"></p>
+          </section>
+        </div>
+
+        <div class="sum-grid sum-grid-2">
+          <section class="sum-box" aria-labelledby="sum-h-chart">
+            <div class="sum-label"><span class="round-num">4</span><span id="sum-h-chart">WIN RATE AS ATTEMPTS ADD UP</span></div>
+            <div class="sum-chart"><svg id="sum-trend" viewBox="0 0 600 215" role="img" aria-label="Running win rate compared with theoretical probability"></svg></div>
+            <p class="sum-note"><span class="sum-key sum-key-line"></span>Your results <span class="sum-key sum-key-dash"></span>Theory</p>
+          </section>
+          <section class="sum-box" aria-labelledby="sum-h-eval">
+            <div class="sum-label"><span class="round-num">5</span><span id="sum-h-eval">EVALUATE</span></div>
+            <ul class="sum-list" id="sum-eval"></ul>
+          </section>
+        </div>
+
+        <section class="sum-box sum-conclusion" aria-labelledby="sum-h-conclude">
+          <div class="sum-label"><span class="round-num">6</span><span id="sum-h-conclude">CONCLUSION</span></div>
+          <p id="sum-conclusion"></p>
+        </section>
+
+        <section class="sum-box sum-pairs" id="sum-pairs" hidden aria-labelledby="sum-h-pairs">
+          <div class="sum-label"><span class="round-num">+</span><span id="sum-h-pairs">TWO IN A ROW</span></div>
+          <ul class="sum-list" id="sum-pairs-list"></ul>
+        </section>
+
+        <div class="sum-foot">
+          <div>
+            <strong>Assumptions</strong>
+            <ul id="sum-assume"></ul>
+          </div>
+          <span class="sum-brand">✳ Balloon Pop · The Probability Carnival</span>
+        </div>
+      </div>
+      <div class="sum-stripe" aria-hidden="true"></div>
+    </article>
+  </dialog>
+
+  <dialog id="pair-summary-dialog" class="summary-dialog" aria-labelledby="psum-title">
+    <div class="sum-toolbar">
+      <span>Take a screenshot of the card below. Your name and date are on it.</span>
+      <span class="sum-toolbar-actions">
+        <button id="pair-summary-copy" type="button" class="button button-outline">Copy as text</button>
+        <button id="pair-summary-print" type="button" class="button button-outline">Print / save PDF</button>
+        <button id="pair-summary-close" type="button" class="button button-gold" autofocus>Close ✕</button>
+      </span>
+    </div>
+    <article class="sum-card">
+      <div class="sum-stripe" aria-hidden="true"></div>
+      <div class="sum-body">
+        <header class="sum-head">
+          <div>
+            <div class="sum-kicker">THE PROBABILITY CARNIVAL · <span id="psum-scenario">SCENARIO 10 · TWO IN A ROW</span></div>
+            <h2 id="psum-title">Can I win twice in a row?</h2>
+            <p class="sum-ticket">Winning ticket: <strong id="psum-ticket"></strong></p>
+            <p class="sum-setup" id="psum-setup"></p>
+          </div>
+          <div class="sum-who">
+            <label>Name <input id="psum-name" class="sum-name" type="text" maxlength="40" placeholder="Type your name" autocomplete="off"></label>
+            <span id="psum-date" class="sum-date"></span>
+          </div>
+        </header>
+
+        <div id="psum-methods" class="sum-grid sum-grid-2 sum-grid-even"></div>
+        <p class="sum-note sum-star" id="psum-star-note"></p>
+
+        <div class="sum-grid sum-grid-2">
+          <section class="sum-box" aria-labelledby="psum-h-chart">
+            <div class="sum-label"><span class="round-num">3</span><span id="psum-h-chart">THEORY VS SIMULATION</span></div>
+            <div class="pair-chart-heading"><span>CHANCE OF WINNING TWICE</span><span>0% <span aria-hidden="true">→</span> <strong id="psum-scale">5%</strong></span></div>
+            <div id="psum-bars" class="pair-chart-rows"></div>
+          </section>
+          <section class="sum-box" aria-labelledby="psum-h-eval">
+            <div class="sum-label"><span class="round-num">4</span><span id="psum-h-eval">EVALUATE</span></div>
+            <ul class="sum-list" id="psum-eval"></ul>
+          </section>
+        </div>
+
+        <section class="sum-box sum-why" aria-labelledby="psum-h-why">
+          <div class="sum-label"><span class="round-num">5</span><span id="psum-h-why">WHY ARE THEY DIFFERENT?</span></div>
+          <p id="psum-why"></p>
+        </section>
+
+        <section class="sum-box sum-conclusion" aria-labelledby="psum-h-conclude">
+          <div class="sum-label"><span class="round-num">6</span><span id="psum-h-conclude">CONCLUSION</span></div>
+          <p id="psum-conclusion"></p>
+        </section>
+
+        <div class="sum-foot">
+          <div>
+            <strong>Assumptions</strong>
+            <ul id="psum-assume"></ul>
+          </div>
+          <span class="sum-brand">✳ Balloon Pop · The Probability Carnival</span>
+        </div>
+      </div>
+      <div class="sum-stripe" aria-hidden="true"></div>
+    </article>
+  </dialog>
 </body>
 </html>
