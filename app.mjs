@@ -3,8 +3,15 @@ import { COLOURS, PARITIES, PRESETS, validateConfig, totalBalloons, probability,
 const $ = (id) => document.getElementById(id);
 const titleCase = (text) => text[0].toUpperCase() + text.slice(1);
 const number = new Intl.NumberFormat("en-AU");
-const percent = (value) => new Intl.NumberFormat("en-AU", { style: "percent", maximumFractionDigits: 1 }).format(value);
-const pairPercent = (value) => value === null ? "—" : new Intl.NumberFormat("en-AU", { style: "percent", maximumFractionDigits: 2 }).format(value);
+function formatPercent(value, ordinaryDigits) {
+  if (value === null) return "—";
+  const amount = value * 100;
+  if (amount > 0 && amount < .001) return `${amount.toExponential(2)}%`;
+  const digits = amount < .1 ? 4 : amount < 1 ? 3 : ordinaryDigits;
+  return `${new Intl.NumberFormat("en-AU", { maximumFractionDigits: digits }).format(amount)}%`;
+}
+const percent = (value) => formatPercent(value, 1);
+const pairPercent = (value) => formatPercent(value, 2);
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const svgNS = "http://www.w3.org/2000/svg";
 
@@ -268,6 +275,7 @@ function renderPairMath() {
   const afterWin = total < 2 || first === 0 ? null : ((colour - 1) / (total - 1)) * ((parity - 1) / (total - 1));
   const replaceFraction = pairWinFraction(config);
   const removeFraction = pairWinFraction(config, true);
+  $("challenge-config").textContent = `${chosenScenario === "custom" ? "CUSTOM GAME" : `SCENARIO ${chosenScenario}`} · ${config.winColour.toUpperCase()} + ${config.winParity.toUpperCase()} · ${config.red} RED / ${config.blue} BLUE / ${config.green} GREEN · ${config.odd} ODD / ${config.even} EVEN`;
   $("replace-first").textContent = pairPercent(first);
   $("replace-second").textContent = pairPercent(first);
   $("replace-both").textContent = pairPercent(pairWinProbability(config));
@@ -307,6 +315,51 @@ function renderPairResults() {
   $("pair-experimental").textContent = result.attempts ? pairPercent(result.wins / result.attempts) : "—";
   $("pair-theoretical").textContent = pairPercent(pairWinProbability(config, mode === "remove"));
   renderPairObserved(mode);
+  renderPairCharts();
+}
+
+function renderPairCharts() {
+  const total = totalBalloons(config);
+  const first = winningProbability(config);
+  const colour = config[config.winColour];
+  const parity = config[config.winParity];
+  const secondWithout = total < 2 || first === 0 ? null : ((colour - 1) / (total - 1)) * ((parity - 1) / (total - 1));
+  const observed = ["replace", "remove"].map((mode) => pairRuns[mode].attempts ? pairRuns[mode].wins / pairRuns[mode].attempts : 0);
+  const maximum = Math.max(first, secondWithout ?? 0, ...observed);
+  const targetScale = maximum > 0 ? maximum * 1.12 : .05;
+  const magnitude = 10 ** Math.floor(Math.log10(targetScale));
+  const normalized = targetScale / magnitude;
+  const scale = Math.min(1, (normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10) * magnitude);
+  for (const mode of ["replace", "remove"]) {
+    const rows = $(mode === "replace" ? "replace-chart-rows" : "remove-chart-rows");
+    rows.replaceChildren();
+    $(mode === "replace" ? "replace-chart-scale" : "remove-chart-scale").textContent = pairPercent(scale);
+    const run = pairRuns[mode];
+    const values = [
+      ["First win", first, "stage"],
+      ["Second win*", mode === "replace" ? first : secondWithout, "stage"],
+      ["Both wins", pairWinProbability(config, mode === "remove"), "both"],
+      ["Simulated", run.attempts ? run.wins / run.attempts : null, "observed"],
+    ];
+    for (const [label, value, kind] of values) {
+      const row = document.createElement("div");
+      row.className = `pair-chart-row pair-chart-row-${kind}`;
+      const labelEl = document.createElement("span");
+      labelEl.className = "pair-chart-label";
+      labelEl.textContent = label;
+      const track = document.createElement("span");
+      track.className = "pair-chart-track";
+      track.setAttribute("aria-hidden", "true");
+      const bar = document.createElement("span");
+      bar.className = "pair-chart-bar";
+      bar.style.width = `${value === null ? 0 : Math.min(100, value / scale * 100)}%`;
+      track.append(bar);
+      const amount = document.createElement("strong");
+      amount.textContent = value === null && kind === "observed" ? "Run pairs" : pairPercent(value);
+      row.append(labelEl, track, amount);
+      rows.append(row);
+    }
+  }
 }
 
 function runPairs(count) {

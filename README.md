@@ -30,6 +30,8 @@ Open **Can you win twice in a row?** beneath the main results. One experiment is
 
 Scenario 10 gives `9/400 = 2.25%` with replacement and `27/1444 ≈ 1.87%` without replacement. Each new pair experiment starts with the original counts, and the two modes keep separate observed results. Without replacement requires at least two balloons. If the winning colour or parity has fewer than two entries, two wins without replacement are impossible.
 
+Each mode has a labelled bar graph for the first win, the conditional second win, the full two-win chance, and the simulated rate. Both graphs share a percentage scale that adjusts to the current settings and results, so they can be compared directly. The current scenario and counts appear immediately above them.
+
 The no-replacement calculation treats balloon colours and number parities as separate pools whose assignments are random. If a real board has a **fixed, known** pairing behind each balloon, the marginal counts alone are insufficient: an exact calculation for that board needs the number of balloons carrying each colour–parity combination.
 
 ## Files
