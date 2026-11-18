@@ -1,9 +1,10 @@
-import { COLOURS, PARITIES, PRESETS, validateConfig, totalBalloons, probability, winningProbability, winningFraction, drawOutcome, displayColours } from "./model.mjs";
+import { COLOURS, PARITIES, PRESETS, validateConfig, totalBalloons, probability, winningProbability, winningFraction, pairWinProbability, pairWinFraction, drawOutcome, drawPair, displayColours } from "./model.mjs";
 
 const $ = (id) => document.getElementById(id);
 const titleCase = (text) => text[0].toUpperCase() + text.slice(1);
 const number = new Intl.NumberFormat("en-AU");
 const percent = (value) => new Intl.NumberFormat("en-AU", { style: "percent", maximumFractionDigits: 1 }).format(value);
+const pairPercent = (value) => value === null ? "—" : new Intl.NumberFormat("en-AU", { style: "percent", maximumFractionDigits: 2 }).format(value);
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const svgNS = "http://www.w3.org/2000/svg";
 
@@ -14,6 +15,7 @@ let wins = 0;
 let frequencies = Object.fromEntries(COLOURS.flatMap((colour) => PARITIES.map((parity) => [`${colour}-${parity}`, 0])));
 let checkpoints = [];
 let boardColours = [];
+let pairRuns = { replace: { attempts: 0, wins: 0, last: null }, remove: { attempts: 0, wins: 0, last: null } };
 
 function randomInt(max) {
   if (globalThis.crypto?.getRandomValues) {
@@ -71,6 +73,7 @@ function applyConfig(next, scenario) {
   renderBoard();
   renderOdds();
   resetData();
+  resetPairData();
   $("action-status").textContent = scenario === "custom" ? "Custom game applied. A fresh experiment is ready." : `Scenario ${scenario} loaded. A fresh experiment is ready.`;
   return true;
 }
@@ -246,11 +249,85 @@ function renderFrequencies() {
   }
 }
 
+function selectedPairMode() {
+  return document.querySelector('input[name="pair-mode"]:checked').value;
+}
+
+function resetPairData() {
+  pairRuns = { replace: { attempts: 0, wins: 0, last: null }, remove: { attempts: 0, wins: 0, last: null } };
+  renderPairMath();
+  renderPairResults();
+  $("pair-status").textContent = "Choose a method and run some pairs.";
+}
+
+function renderPairMath() {
+  const total = totalBalloons(config);
+  const colour = config[config.winColour];
+  const parity = config[config.winParity];
+  const first = winningProbability(config);
+  const afterWin = total < 2 || first === 0 ? null : ((colour - 1) / (total - 1)) * ((parity - 1) / (total - 1));
+  const replaceFraction = pairWinFraction(config);
+  const removeFraction = pairWinFraction(config, true);
+  $("replace-first").textContent = pairPercent(first);
+  $("replace-second").textContent = pairPercent(first);
+  $("replace-both").textContent = pairPercent(pairWinProbability(config));
+  $("replace-formula").textContent = `${colour}/${total} × ${parity}/${total} × ${colour}/${total} × ${parity}/${total} = ${replaceFraction.numerator}/${replaceFraction.denominator}`;
+  $("remove-first").textContent = pairPercent(first);
+  $("remove-second").textContent = pairPercent(afterWin);
+  $("remove-both").textContent = pairPercent(pairWinProbability(config, true));
+  $("remove-formula").textContent = removeFraction
+    ? `${colour}/${total} × ${parity}/${total} × ${Math.max(0, colour - 1)}/${total - 1} × ${Math.max(0, parity - 1)}/${total - 1} = ${removeFraction.numerator}/${removeFraction.denominator}`
+    : "At least two balloons and two hidden numbers are needed.";
+  $("conditional-note").textContent = total < 2
+    ? "*A no-replacement pair needs at least two balloons and two hidden numbers."
+    : first === 0
+      ? "*A first win is impossible with these counts, so two consecutive wins are impossible."
+      : `*The second chance assumes the first toss won. That leaves ${colour - 1} ${config.winColour} balloons and ${parity - 1} ${config.winParity} numbers among ${total - 1} of each.`;
+  renderPairObserved("replace");
+  renderPairObserved("remove");
+}
+
+function renderPairObserved(mode) {
+  const result = pairRuns[mode];
+  $(mode === "replace" ? "replace-observed" : "remove-observed").textContent = result.attempts
+    ? `Observed: ${number.format(result.wins)} double wins in ${number.format(result.attempts)} pairs (${pairPercent(result.wins / result.attempts)}).`
+    : "Observed: no pairs run yet.";
+}
+
+function renderPairResults() {
+  const mode = selectedPairMode();
+  const result = pairRuns[mode];
+  const impossible = mode === "remove" && totalBalloons(config) < 2;
+  for (const id of ["pair-one", "pair-hundred", "pair-run-custom"]) $(id).disabled = impossible;
+  setError("pair-run-error", impossible ? "Without replacement needs at least two balloons and two hidden numbers." : "");
+  $("pair-last").textContent = result.last
+    ? `${titleCase(result.last.first.colour)} ${result.last.first.parity} → ${titleCase(result.last.second.colour)} ${result.last.second.parity}${result.last.doubleWin ? " · double win!" : ""}`
+    : "No pairs yet";
+  $("pair-wins").textContent = `${number.format(result.wins)} / ${number.format(result.attempts)}`;
+  $("pair-experimental").textContent = result.attempts ? pairPercent(result.wins / result.attempts) : "—";
+  $("pair-theoretical").textContent = pairPercent(pairWinProbability(config, mode === "remove"));
+  renderPairObserved(mode);
+}
+
+function runPairs(count) {
+  const mode = selectedPairMode();
+  const result = pairRuns[mode];
+  for (let i = 0; i < count; i++) {
+    const pair = drawPair(config, mode === "remove", randomInt);
+    if (!pair) return;
+    result.last = pair;
+    result.attempts++;
+    if (pair.doubleWin) result.wins++;
+  }
+  renderPairResults();
+  $("pair-status").textContent = `Added ${number.format(count)} ${count === 1 ? "pair" : "pairs"} ${mode === "remove" ? "without" : "with"} replacement. Each new pair starts with the original mix.`;
+}
+
 function summaryText() {
   const total = totalBalloons(config);
   const fraction = winningFraction(config);
   const experimental = trials.length ? `${wins}/${trials.length} (${percent(wins / trials.length)})` : "No tosses yet";
-  return [
+  const lines = [
     "BALLOON POP — RESULTS TICKET",
     `Scenario: ${chosenScenario === "custom" ? "Custom" : chosenScenario}`,
     `Winning combination: ${titleCase(config.winColour)} dot and ${config.winParity} number`,
@@ -259,7 +336,12 @@ function summaryText() {
     `Theoretical probability: ${config[config.winColour]}/${total} × ${config[config.winParity]}/${total} = ${fraction.numerator}/${fraction.denominator} (${percent(winningProbability(config))})`,
     `Trials: ${trials.length}; wins: ${wins}; misses: ${trials.length - wins}`,
     `Experimental probability: ${experimental}`,
-  ].join("\n");
+  ];
+  for (const mode of ["replace", "remove"]) {
+    const result = pairRuns[mode];
+    if (result.attempts) lines.push(`Two in a row, ${mode === "remove" ? "without" : "with"} replacement: ${result.wins}/${result.attempts} pairs (${pairPercent(result.wins / result.attempts)} experimental; ${pairPercent(pairWinProbability(config, mode === "remove"))} theoretical)`);
+  }
+  return lines.join("\n");
 }
 
 function downloadCSV() {
@@ -306,6 +388,20 @@ function setup() {
     if (!error) runTrials(count, count === 1);
   });
   $("reset-run").addEventListener("click", () => { resetData(); $("action-status").textContent = "Experiment reset. Game settings are ready for a new run."; });
+  document.querySelectorAll('input[name="pair-mode"]').forEach((input) => input.addEventListener("change", () => {
+    renderPairResults();
+    $("pair-status").textContent = `Showing ${selectedPairMode() === "remove" ? "without" : "with"} replacement results.`;
+  }));
+  $("pair-one").addEventListener("click", () => runPairs(1));
+  $("pair-hundred").addEventListener("click", () => runPairs(100));
+  $("pair-run-custom").addEventListener("click", () => {
+    const raw = $("pair-custom-count").value.trim();
+    const count = raw ? Number(raw) : NaN;
+    const error = !Number.isSafeInteger(count) || count < 1 || count > 10000 ? "Enter a whole number of pairs from 1 to 10,000." : "";
+    setError("pair-run-error", error);
+    if (!error) runPairs(count);
+  });
+  $("pair-reset").addEventListener("click", resetPairData);
   $("download-csv").addEventListener("click", downloadCSV);
   $("copy-summary").addEventListener("click", async () => {
     try {

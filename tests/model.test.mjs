@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { PRESETS, validateConfig, winningProbability, winningFraction, drawOutcome, probability } from "../model.mjs";
+import { PRESETS, validateConfig, winningProbability, winningFraction, pairWinProbability, pairWinFraction, drawOutcome, drawPair, probability } from "../model.mjs";
 
 test("all ten scenario presets match the supplied sheet and have coherent totals", () => {
   assert.equal(PRESETS.length, 10);
@@ -43,4 +43,33 @@ test("editable parity counts affect both theory and simulated outcomes", () => {
 test("invalid count totals and fractional values are rejected", () => {
   assert.match(validateConfig({ ...PRESETS[9], even: 9 }), /totals/);
   assert.match(validateConfig({ ...PRESETS[9], red: 4.5 }), /whole-number/);
+});
+
+test("scenario 10 two-win chances distinguish replacement from removal", () => {
+  const scenario = PRESETS[9];
+  assert.deepEqual(pairWinFraction(scenario), { numerator: 9, denominator: 400 });
+  assert.equal(pairWinProbability(scenario), 0.0225);
+  assert.deepEqual(pairWinFraction(scenario, true), { numerator: 27, denominator: 1444 });
+  assert.ok(Math.abs(pairWinProbability(scenario, true) - 0.01869806094) < 1e-9);
+});
+
+test("removing both resources changes the second toss and pools reset per pair", () => {
+  const config = { red: 1, blue: 1, green: 0, odd: 1, even: 1, winColour: "red", winParity: "odd" };
+  const alwaysFirst = () => 0;
+  const withReplacement = drawPair(config, false, alwaysFirst);
+  const withoutReplacement = drawPair(config, true, alwaysFirst);
+  assert.equal(withReplacement.doubleWin, true);
+  assert.equal(withoutReplacement.doubleWin, false);
+  assert.deepEqual(withoutReplacement.second, { colour: "blue", parity: "even", win: false });
+  assert.equal(drawPair(config, true, alwaysFirst).first.win, true);
+  assert.deepEqual(pairWinFraction(config, true), { numerator: 0, denominator: 1 });
+});
+
+test("without-replacement pair is unavailable when only one balloon exists", () => {
+  const config = { red: 1, blue: 0, green: 0, odd: 1, even: 0, winColour: "red", winParity: "odd" };
+  assert.equal(validateConfig(config), "");
+  assert.equal(pairWinFraction(config, true), null);
+  assert.equal(pairWinProbability(config, true), null);
+  assert.equal(drawPair(config, true, () => 0), null);
+  assert.equal(pairWinProbability(config), 1);
 });

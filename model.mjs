@@ -58,6 +58,26 @@ export function winningFraction(config) {
   return { numerator: numerator / divisor, denominator: denominator / divisor };
 }
 
+export function pairWinFraction(config, withoutReplacement = false) {
+  const total = totalBalloons(config);
+  if (withoutReplacement && total < 2) return null;
+  const colour = config[config.winColour];
+  const parity = config[config.winParity];
+  const numerator = withoutReplacement
+    ? colour * parity * Math.max(0, colour - 1) * Math.max(0, parity - 1)
+    : colour * colour * parity * parity;
+  const denominator = withoutReplacement
+    ? total * total * (total - 1) * (total - 1)
+    : total ** 4;
+  const divisor = gcd(numerator, denominator);
+  return { numerator: numerator / divisor, denominator: denominator / divisor };
+}
+
+export function pairWinProbability(config, withoutReplacement = false) {
+  const fraction = pairWinFraction(config, withoutReplacement);
+  return fraction ? fraction.numerator / fraction.denominator : null;
+}
+
 // randomInt(max) must return an integer from 0 through max - 1.
 export function drawOutcome(config, randomInt) {
   const total = totalBalloons(config);
@@ -73,6 +93,18 @@ export function drawOutcome(config, randomInt) {
   }
   const parity = randomInt(total) < config.odd ? "odd" : "even";
   return { colour, parity, win: colour === config.winColour && parity === config.winParity };
+}
+
+// One independent experiment is exactly two tosses. Pools reset before the next pair.
+export function drawPair(config, withoutReplacement, randomInt) {
+  if (withoutReplacement && totalBalloons(config) < 2) return null;
+  const first = drawOutcome(config, randomInt);
+  let secondConfig = config;
+  if (withoutReplacement) {
+    secondConfig = { ...config, [first.colour]: config[first.colour] - 1, [first.parity]: config[first.parity] - 1 };
+  }
+  const second = drawOutcome(secondConfig, randomInt);
+  return { first, second, doubleWin: first.win && second.win };
 }
 
 export function displayColours(config, limit = 40) {
