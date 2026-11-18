@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173d4d">
+  <meta name="description" content="Explore theoretical and experimental probability at the Balloon Pop carnival booth.">
+  <title>Balloon Pop · The Probability Carnival</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.mjs"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to the game</a>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top" aria-label="Balloon Pop, back to top"><span class="brand-mark" aria-hidden="true">✳</span><span>THE PROBABILITY<br><strong>CARNIVAL</strong></span></a>
+      <nav aria-label="Page sections"><a href="#booth">The booth</a><a href="#odds">The odds</a><a href="#results">Results</a></nav>
+      <span class="topbar-tag">A little chance. A lot to learn.</span>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-stars" aria-hidden="true">✦ &nbsp; ✧ &nbsp; ✦</div>
+      <p class="eyebrow">STEP RIGHT UP · A PROBABILITY EXPERIMENT</p>
+      <h1 id="hero-title">Balloon <em>Pop!</em></h1>
+      <p class="hero-lead">Pick a winning ticket. Pop a balloon. See how the odds play out over one toss—or one thousand.</p>
+      <div class="hero-badges"><span>01 · Set the game</span><span>02 · Make a prediction</span><span>03 · Run the experiment</span></div>
+      <div class="hero-scallop" aria-hidden="true"></div>
+    </section>
+
+    <div class="content-wrap">
+      <section id="booth" class="booth-grid" aria-label="Balloon Pop game">
+        <div class="booth-card">
+          <div class="awning" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          <div class="booth-topline"><span class="small-caps">THE BALLOON BOOTH</span><span class="booth-sparkle" aria-hidden="true">✦</span><span id="board-count">20 BALLOONS</span></div>
+          <div class="balloon-stage">
+            <div class="stage-glow" aria-hidden="true"></div>
+            <div id="balloon-board" class="balloon-board" aria-hidden="true"></div>
+            <span class="stage-star star-one" aria-hidden="true">✧</span><span class="stage-star star-two" aria-hidden="true">✦</span>
+          </div>
+          <div class="booth-bottom">
+            <div class="last-ticket" aria-live="polite" aria-atomic="true"><span class="ticket-label">LAST TOSS</span><strong id="last-outcome">Waiting for a toss…</strong><span id="last-verdict">Your result will appear here.</span></div>
+            <button id="pop-one" class="button button-gold button-large" type="button">🎯 &nbsp; Pop one balloon</button>
+          </div>
+        </div>
+
+        <div class="setup-card paper-card">
+          <div class="section-kicker"><span class="round-num">01</span><span>MAKE YOUR GAME</span></div>
+          <h2>What wins?</h2>
+          <p class="muted">Scenario 10 is ready to play. Choose another ticket or set your own balloon mix.</p>
+          <label class="field-label" for="scenario">Scenario ticket</label>
+          <select id="scenario" class="field-select" aria-describedby="preset-help"></select>
+          <p id="preset-help" class="field-help">Scenarios 1–10 come from the supplied assignment sheet.</p>
+          <form id="settings-form" novalidate>
+            <div class="field-group-title">DOT COLOURS <span>number of balloons</span></div>
+            <div class="count-grid colours-grid">
+              <label class="count-field"><span><i class="swatch red" aria-hidden="true"></i>Red</span><input id="red-count" name="red" type="number" min="0" max="1000" step="1" inputmode="numeric" required></label>
+              <label class="count-field"><span><i class="swatch blue" aria-hidden="true"></i>Blue</span><input id="blue-count" name="blue" type="number" min="0" max="1000" step="1" inputmode="numeric" required></label>
+              <label class="count-field"><span><i class="swatch green" aria-hidden="true"></i>Green</span><input id="green-count" name="green" type="number" min="0" max="1000" step="1" inputmode="numeric" required></label>
+            </div>
+            <div class="field-group-title">HIDDEN NUMBERS <span>odd &amp; even counts</span></div>
+            <div class="count-grid parity-grid">
+              <label class="count-field"><span>Odd</span><input id="odd-count" name="odd" type="number" min="0" max="1000" step="1" inputmode="numeric" required></label>
+              <label class="count-field"><span>Even</span><input id="even-count" name="even" type="number" min="0" max="1000" step="1" inputmode="numeric" required></label>
+            </div>
+            <div class="field-group-title">WINNING TICKET <span>both must match</span></div>
+            <div class="winning-fields">
+              <label>Dot colour<select id="win-colour" name="winColour" class="field-select"><option value="red">Red dot</option><option value="blue">Blue dot</option><option value="green">Green dot</option></select></label>
+              <label>Number<select id="win-parity" name="winParity" class="field-select"><option value="odd">Odd number</option><option value="even">Even number</option></select></label>
+            </div>
+            <p id="settings-error" class="error" role="alert" hidden></p>
+            <button class="button button-ink apply-button" type="submit">Apply game settings <span aria-hidden="true">→</span></button>
+          </form>
+          <p class="model-note">Each toss draws a dot colour and a number parity independently from these counts. The balloon is replaced before the next toss.</p>
+        </div>
+      </section>
+
+      <section id="odds" class="odds-section" aria-labelledby="odds-title">
+        <div class="section-heading"><div><div class="section-kicker"><span class="round-num">02</span><span>BEFORE THE FIRST POP</span></div><h2 id="odds-title">Know <em>the odds.</em></h2></div><p>Every colour can pair with an odd or even number. The highlighted box is your winning ticket.</p></div>
+        <div class="odds-grid">
+          <div class="outcome-card paper-card">
+            <div class="card-heading"><span class="small-caps">THE SIX POSSIBLE COMBINATIONS</span><span class="asterisk" aria-hidden="true">✳</span></div>
+            <div class="table-wrap"><table class="outcome-table"><caption class="sr-only">Theoretical probability for each dot colour and parity combination</caption><thead><tr><th scope="col">DOT COLOUR</th><th scope="col">ODD</th><th scope="col">EVEN</th></tr></thead><tbody id="outcome-body"></tbody></table></div>
+            <p class="field-help">Sample spaces: {red, blue, green} and {odd, even}.</p>
+          </div>
+          <div class="formula-card">
+            <span class="formula-star" aria-hidden="true">✦</span><span class="small-caps">YOUR WINNING CHANCE</span>
+            <h3 id="formula-target">Blue dot + odd number</h3>
+            <div class="big-prob" id="theory-percent">15%</div>
+            <div class="formula-line" id="formula-line">6/20 × 10/20 = 3/20</div>
+            <p id="formula-words">About 15 wins in 100 tosses on average.</p>
+            <div class="formula-footer">THEORETICAL PROBABILITY <span aria-hidden="true">✧</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="results" class="results-section" aria-labelledby="results-title">
+        <div class="section-heading"><div><div class="section-kicker"><span class="round-num">03</span><span>RUN THE EXPERIMENT</span></div><h2 id="results-title">Let chance <em>take a turn.</em></h2></div><p>Try a few tosses, then many. Watch the experimental result move toward the theoretical chance.</p></div>
+        <div class="run-bar"><span class="run-label">QUICK TOSSES</span><button type="button" class="button button-outline batch-button" data-tosses="10">+ 10</button><button type="button" class="button button-outline batch-button" data-tosses="100">+ 100</button><button type="button" class="button button-outline batch-button" data-tosses="1000">+ 1,000</button><span class="run-divider" aria-hidden="true"></span><label class="custom-run">Custom <input id="custom-count" type="number" min="1" max="10000" step="1" value="250" inputmode="numeric" aria-label="Number of custom tosses"></label><button id="run-custom" type="button" class="button button-ink">Run tosses <span aria-hidden="true">→</span></button></div>
+        <p id="run-error" class="error" role="alert" hidden></p>
+        <div class="stats-grid">
+          <div class="stat-card"><span>ATTEMPTS</span><strong id="trial-count">0</strong><small>total tosses</small></div>
+          <div class="stat-card"><span>WINNING POPS</span><strong id="win-count">0</strong><small id="loss-count">0 misses</small></div>
+          <div class="stat-card stat-card-highlight"><span>EXPERIMENTAL CHANCE</span><strong id="experimental-percent">—</strong><small id="experimental-fraction">Start tossing to see it</small></div>
+          <div class="stat-card"><span>THEORETICAL CHANCE</span><strong id="expected-percent">15%</strong><small id="difference">Compare after a toss</small></div>
+        </div>
+        <div class="charts-grid">
+          <div class="chart-card paper-card"><div class="card-heading"><div><span class="small-caps">HOW THE WIN RATE MOVES</span><h3>Chance over time</h3></div><span class="chart-key"><i></i>Your tosses <b></b>Expected</span></div><div class="chart-frame"><svg id="trend-chart" viewBox="0 0 600 215" role="img" aria-label="Running win rate compared with theoretical probability"></svg></div><p class="chart-note">The line can jump around at first. Larger samples usually settle closer to the expected rate.</p></div>
+          <div class="chart-card paper-card"><div class="card-heading"><div><span class="small-caps">EVERY POSSIBLE OUTCOME</span><h3>What came up</h3></div></div><div id="frequency-chart" class="frequency-chart" aria-label="Observed counts by colour and parity"></div></div>
+        </div>
+      </section>
+
+      <section class="record-section" aria-labelledby="record-title"><div class="record-copy"><div class="section-kicker"><span class="round-num">04</span><span>RECORD &amp; REFLECT</span></div><h2 id="record-title">Take your results <em>with you.</em></h2><p>Capture this ticket for your assignment. Compare your experimental chance with the prediction, then explain why they may differ.</p><div class="record-actions"><button id="copy-summary" type="button" class="button button-gold">Copy summary</button><button id="download-csv" type="button" class="button button-outline-light">Download CSV</button><button id="reset-run" type="button" class="text-button">Reset experiment ↺</button></div><p id="action-status" class="action-status" role="status"></p></div><div id="summary-card" class="summary-card"><div class="summary-top"><span>THE PROBABILITY CARNIVAL</span><span>RESULTS TICKET № <b id="ticket-scenario">10</b></span></div><div class="summary-title">Balloon Pop!</div><div class="summary-rule"></div><dl><div><dt>Winning combination</dt><dd id="summary-target">Blue dot · Odd number</dd></div><div><dt>Balloon mix</dt><dd id="summary-mix">4 red · 6 blue · 10 green</dd></div><div><dt>Number mix</dt><dd id="summary-parity">10 odd · 10 even</dd></div><div><dt>Trials / wins</dt><dd id="summary-trials">0 / 0</dd></div><div><dt>Theoretical</dt><dd id="summary-theory">15%</dd></div><div><dt>Experimental</dt><dd id="summary-experiment">—</dd></div></dl><div class="summary-bottom">YOUR EVIDENCE OF CHANCE <span aria-hidden="true">✦ ✦ ✦</span></div></div></section>
+      <footer><span>✳ THE PROBABILITY CARNIVAL</span><span>Made for curious minds and repeated trials.</span><a href="#top">Back to top ↑</a></footer>
+    </div>
+  </main>
+</body>
+</html>
